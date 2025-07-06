@@ -6,19 +6,19 @@ const formData = {
 };
 const form = document.querySelector('.feedback-form');
 
+const localData = JSON.parse(localStorage.getItem(LOCAL_KEY));
+if (localData) {
+  formData.email = JSON.parse(localStorage.getItem(LOCAL_KEY)).email ?? '';
+  formData.message = JSON.parse(localStorage.getItem(LOCAL_KEY)).message ?? '';
+}
+form.elements.email.value = formData.email;
+form.elements.message.value = formData.message;
+
 form.addEventListener('input', event => {
   formData.email = form.elements.email.value.trim();
   formData.message = form.elements.message.value.trim();
   localStorage.setItem(LOCAL_KEY, JSON.stringify(formData));
 });
-
-if (localStorage.length) {
-  formData.email = JSON.parse(localStorage.getItem(LOCAL_KEY)).email;
-  formData.message = JSON.parse(localStorage.getItem(LOCAL_KEY)).message;
-}
-
-form.elements.email.value = formData.email;
-form.elements.message.value = formData.message;
 
 form.addEventListener('submit', event => {
   event.preventDefault();
@@ -27,8 +27,8 @@ form.addEventListener('submit', event => {
   } else {
     console.log(formData);
     localStorage.removeItem(LOCAL_KEY);
-    for (const item in formData) {
-      delete formData[item];
+    for (let item in formData) {
+      formData[item] = '';
     }
     form.reset();
   }
